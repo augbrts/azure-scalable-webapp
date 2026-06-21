@@ -9,10 +9,12 @@ virtual com sub-redes pública e privada.
 ## Arquitetura
 
 ```
-Internet → IP Público (Standard) → Load Balancer (Standard)
-                                             → VM Scale Set (autoscale 2→3, subnet pública)
-                                                           ├─ MySQL Flexible Server (subnet privada, sem IP público)
-                                                           └─ Blob Storage (materiais de aula, lido via Managed Identity)
+Internet → 
+  IP Público (Standard) → 
+      Load Balancer (Standard) → 
+          VM Scale Set (autoscale 2→3, subnet pública)
+                    ├─ MySQL Flexible Server (subnet privada, sem IP público)
+                    └─ Blob Storage (materiais de aula, lido via Managed Identity)
 ```
 
 ## Serviços Azure utilizados
