@@ -1,0 +1,17 @@
+# Segredos e estado — NUNCA versionar
+# Segredos e estado — NUNCA versionar
+terraform.tfvars
+*.tfvars
+!terraform.tfvars.example
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# NOTA: .terraform.lock.hcl NÃO é ignorado de propósito — ele deve ser
+# commitado para travar as versões do provider entre máquinas/colegas.
