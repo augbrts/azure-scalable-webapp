@@ -1,4 +1,4 @@
-# Projeto 1 — Aplicação Web Resiliente com Escalabilidade Automática (Azure)
+# Aplicação Web Resiliente com Escalabilidade Automática (Azure)
 
 Infraestrutura escalável na Microsoft Azure hospedando um portal institucional simples
 (**Byte Academy**): os alunos veem materiais de aula e postam atividades. A aplicação roda
@@ -6,25 +6,22 @@ atrás de um **Load Balancer**, sobre um **VM Scale Set com auto scaling**, usan
 dados gerenciado** (MySQL) e **armazenamento de objetos** (Blob), tudo dentro de uma rede
 virtual com sub-redes pública e privada.
 
-> Projeto acadêmico. Foco em **menor custo**, **boas práticas** e **evidências** de
-> funcionamento, balanceamento e escalabilidade.
-
 ## Arquitetura
 
-![Diagrama da arquitetura](diagrama/arquitetura.png)
-
 ```
-Internet → IP Público (Standard) → Load Balancer (Standard)
-         → VM Scale Set (autoscale 2→3, subnet pública)
-              ├─ MySQL Flexible Server (subnet privada, sem IP público)
-              └─ Blob Storage (materiais de aula, lido via Managed Identity)
+Internet → 
+  IP Público (Standard) → 
+      Load Balancer (Standard) → 
+          VM Scale Set (autoscale 2→3, subnet pública)
+                    ├─ MySQL Flexible Server (subnet privada, sem IP público)
+                    └─ Blob Storage (materiais de aula, lido via Managed Identity)
 ```
 
 ## Serviços Azure utilizados
 
-Virtual Network · Sub-redes pública e privada · VM Scale Set · Standard Load Balancer ·
-Azure Database for MySQL Flexible Server · Blob Storage · Network Security Groups ·
-Azure Monitor (auto scaling) · Managed Identity.
+Virtual Network, Sub-redes pública e privada, VM Scale Set, Standard Load Balancer,
+Azure Database for MySQL Flexible Server, Blob Storage, Network Security Groups,
+Azure Monitor (auto scaling), Managed Identity.
 
 ## Como funciona
 
@@ -57,12 +54,6 @@ az login
 # defina suas variáveis e a senha do banco (ver scripts/)
 bash scripts/provision.sh        # ou: pwsh scripts/provision.ps1
 ```
-
-O passo a passo detalhado, com pontos de captura de prints, está em
-[`docs/roteiro.md`](docs/roteiro.md).
-
-> ⚠️ A criação da VM Scale Set depende de você ter **preenchido o `infra/cloud-init.yaml`** com
-> seus valores e **publicado este repositório** (o cloud-init faz `git clone` dele).
 
 ## Custos
 

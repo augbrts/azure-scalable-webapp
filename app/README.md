@@ -1,8 +1,8 @@
-# Byte Academy — app do Projeto 1 (Azure)
+# Byte Academy - app do Projeto 1 (Azure)
 
 Portal institucional simples: o aluno **vê materiais de aula** (lidos do Azure Blob Storage)
 e **posta atividades** (gravadas no Azure Database for MySQL). O rodapé mostra **qual
-instância** da VM Scale Set respondeu — o que prova o balanceamento de carga.
+instância** da VM Scale Set respondeu - o que prova o balanceamento de carga.
 
 ## Como o app atende ao enunciado
 
@@ -70,4 +70,4 @@ npm start              # http://localhost:8080
 
 > Localmente, a listagem de **materiais** só funciona se a sua conta `az login` tiver a
 > role *Storage Blob Data Reader* no storage. Caso contrário, a app mostra um aviso amigável
-> e o restante continua funcionando — o teste completo é feito na VMSS.
+> e o restante continua funcionando - o teste completo é feito na VMSS.
