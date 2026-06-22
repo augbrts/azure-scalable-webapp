@@ -80,6 +80,17 @@ resource "azurerm_network_security_group" "web" {
     source_address_prefix      = "AzureLoadBalancer"
     destination_address_prefix = "*"
   }
+security_rule {
+    name                       = "allow-app-data"
+    priority                   = 120
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_network_security_group" "db" {
@@ -124,7 +135,7 @@ resource "azurerm_storage_account" "st" {
 
 resource "azurerm_storage_container" "materiais" {
   name                  = "materiais"
-  storage_account_name  = azurerm_storage_account.st.name
+  storage_account_id    = azurerm_storage_account.st.id
   container_access_type = "private"
 }
 
@@ -151,7 +162,6 @@ resource "azurerm_mysql_flexible_server" "db" {
   administrator_password = var.db_admin_password
   sku_name               = "B_Standard_B1ms" # Burstable B1ms (tier mais barato)
   version                = "8.0.21"
-  zone                   = "1"
 
   delegated_subnet_id = azurerm_subnet.db.id
   private_dns_zone_id = azurerm_private_dns_zone.mysql.id
