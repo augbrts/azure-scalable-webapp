@@ -48,8 +48,8 @@ Azure Monitor (auto scaling), Managed Identity.
 ├── terraform/    # infrastructure as code (Terraform) — see terraform/README.md
 ├── scripts/      # provisioning via Azure CLI (bash and PowerShell)
 ├── diagrama/     # architecture diagram (draw.io + PNG)
-├── docs/         # full walkthrough + technical and cost reports + evidence
-└── evidencias/   # evaluation screenshots
+├── docs/         # full walkthrough + technical and cost reports
+└── evidencias/   # evaluation screenshots (sensitive IDs redacted)
 ```
 
 ## How to provision (quick start)
@@ -74,38 +74,76 @@ az login
 bash scripts/provision.sh        # or: pwsh scripts/provision.ps1
 ```
 
-The detailed, step-by-step guide (with screenshot checkpoints) is in `docs/roteiro.md`.
+The detailed, step-by-step guide is in `docs/roteiro.md`.
 
 ## Evidence
 
-Provisioning, functionality and the auto scaling cycle were validated and documented with
-screenshots (see `docs/Infraestrutura_Escalavel_com_Auto_Scaling_Azure_censurado.docx`):
+> Subscription IDs were redacted from the screenshots for security.
 
-| Evidence | What it demonstrates |
-|---|---|
-| Terraform `plan`/`apply` with checks | Infrastructure provisioned as code, no errors |
-| Print 6 | Files in the Blob Storage `materiais` container |
-| Print 14 | App reachable via the Load Balancer IP, showing the responding instance |
-| Print 6a | Downloading a material served from Blob (via Managed Identity) |
-| Print 17 | Activity written to and listed from the managed MySQL |
-| Print 15 | Hostname alternating across instances — proof of load balancing |
-| Print 12 | Instances registered in the Load Balancer backend pool |
-| Print 13 | Auto scaling policy configured (CPU 70% / 30%) |
-| Print 18 | Full auto scaling cycle in the Azure Activity Log: scale-up under load and scale-down after CPU drops |
-| Terraform `destroy` | Complete teardown of all resources |
+### Infrastructure provisioned as code (Terraform)
 
-> Print 18 uses the **Azure Activity Log** (`Scaleup/Action` and `Scaledown/Action` events with
-> timestamps) instead of a single "N instances on screen" snapshot — stronger evidence, since it
-> proves the entire automatic scaling cycle, not just one moment.
+`terraform apply` completing, with outputs and a live health/DB check:
+
+![terraform apply](evidencias/print-terraform-apply.png)
+
+Resources tracked in Terraform state:
+
+![terraform state list](evidencias/print-terraform-state-list.png)
+
+### Application reachable via the Load Balancer
+
+The app served through the Load Balancer's public IP, showing the responding instance in the footer:
+
+![app via load balancer](evidencias/print-14-app-load-balancer.png)
+
+Reloading hits a different instance (`vmss-web_1`) — proof of load balancing:
+
+![instance alternating](evidencias/print-15-instancia-alternando.png)
+
+Instances registered in the Load Balancer backend pool:
+
+![backend pool](evidencias/print-12-backend-pool.png)
+
+### Managed database (MySQL) in use
+
+An activity submitted through the form and listed back from the managed MySQL:
+
+![activity posted](evidencias/print-17-atividade-postada.png)
+
+### Object storage (Blob) in use
+
+Files in the `materiais` container, listed via CLI:
+
+![blob list](evidencias/print-06-blob-list.png)
+
+Downloading a class material served from Blob (via Managed Identity):
+
+![download material](evidencias/print-06a-download-material.png)
+
+### Auto scaling
+
+Auto scaling policy configured (CPU 70% / 30%):
+
+![autoscale config](evidencias/print-13-autoscale-config.png)
+
+Full scaling cycle in the **Azure Activity Log** — `Scaleup/Action` under load and
+`Scaledown/Action` after CPU drops (stronger evidence than a single snapshot):
+
+![autoscale activity log](evidencias/print-18-autoscale-activity-log.png)
+
+### Cleanup
+
+`terraform destroy` tearing everything down — *Destroy complete! Resources: 23 destroyed*:
+
+![terraform destroy](evidencias/print-terraform-destroy.png)
 
 ## Cost
 
 The solution was sized for the lowest possible cost: MySQL `B1ms` (burstable, free tier),
 `LRS` storage, no zonal high availability, and internet egress via the Load Balancer outbound
-rule (avoiding NAT Gateway costs). The web tier uses `D2s_v3` — the Burstable series (B-series,
-cheaper) was the initial choice but hit capacity restrictions in the region, so `D2s_v3` was the
-available SKU. The monthly estimate and assumptions are in `docs/relatorio-custos.md`. Real cost
-trends to cents by deallocating/deleting resources when not in use.
+rule (avoiding NAT Gateway costs). The web tier uses `D2s_v3` — the Burstable series (cheaper)
+was the initial choice but hit capacity restrictions in the region, so `D2s_v3` was the
+available SKU. The monthly estimate and assumptions are in `docs/relatorio-custos.md`.
 
 ## Cleanup
 
