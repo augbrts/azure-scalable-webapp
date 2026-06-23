@@ -3,9 +3,6 @@
 Salve aqui os prints numerados, com nomes descritivos. Sugestão de nomenclatura:
 `print-NN-descricao.png` (ex.: `print-14-app-no-lb.png`).
 
-> ⚠️ Antes de salvar/commitar, confira que **não aparecem** senhas, connection strings, chaves
-> de storage ou o `subscription id` em destaque (pode borrar).
-
 ## Lista de prints
 
 | # | O que capturar | Evidência |
