@@ -37,15 +37,15 @@ Azure Monitor (auto scaling), Managed Identity.
    writes/lists activities in the managed **MySQL** (private access, not exposed to the internet).
 4. **Auto scaling** grows from 1 to 2 instances when CPU exceeds 70% (capped by the
    subscription's 4-vCPU quota).
-5. Each page shows **which instance responded** — evidence of load balancing.
+5. Each page shows **which instance responded** - evidence of load balancing.
 
 ## Repository structure
 
 ```
 .
-├── app/          # Node.js (Express) application — see app/README.md
+├── app/          # Node.js (Express) application - see app/README.md
 ├── infra/        # cloud-init.yaml that provisions the app on the VMSS
-├── terraform/    # infrastructure as code (Terraform) — see terraform/README.md
+├── terraform/    # infrastructure as code (Terraform) - see terraform/README.md
 ├── scripts/      # provisioning via Azure CLI (bash and PowerShell)
 ├── diagrama/     # architecture diagram (draw.io + PNG)
 ├── docs/         # full walkthrough + technical and cost reports
@@ -96,7 +96,7 @@ The app served through the Load Balancer's public IP, showing the responding ins
 
 ![app via load balancer](evidencias/print-14-app-load-balancer.png)
 
-Reloading hits a different instance (`vmss-web_1`) — proof of load balancing:
+Reloading hits a different instance (`vmss-web_1`) - proof of load balancing:
 
 ![instance alternating](evidencias/print-15-instancia-alternando.png)
 
@@ -126,14 +126,14 @@ Auto scaling policy configured (CPU 70% / 30%):
 
 ![autoscale config](evidencias/print-13-autoscale-config.png)
 
-Full scaling cycle in the **Azure Activity Log** — `Scaleup/Action` under load and
+Full scaling cycle in the **Azure Activity Log** - `Scaleup/Action` under load and
 `Scaledown/Action` after CPU drops (stronger evidence than a single snapshot):
 
 ![autoscale activity log](evidencias/print-18-autoscale-activity-log.png)
 
 ### Cleanup
 
-`terraform destroy` tearing everything down — *Destroy complete! Resources: 23 destroyed*:
+`terraform destroy` tearing everything down - *Destroy complete! Resources: 23 destroyed*:
 
 ![terraform destroy](evidencias/print-terraform-destroy.png)
 
@@ -141,7 +141,7 @@ Full scaling cycle in the **Azure Activity Log** — `Scaleup/Action` under load
 
 The solution was sized for the lowest possible cost: MySQL `B1ms` (burstable, free tier),
 `LRS` storage, no zonal high availability, and internet egress via the Load Balancer outbound
-rule (avoiding NAT Gateway costs). The web tier uses `D2s_v3` — the Burstable series (cheaper)
+rule (avoiding NAT Gateway costs). The web tier uses `D2s_v3` - the Burstable series (cheaper)
 was the initial choice but hit capacity restrictions in the region, so `D2s_v3` was the
 available SKU. The monthly estimate and assumptions are in `docs/relatorio-custos.md`.
 
