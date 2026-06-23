@@ -162,5 +162,3 @@ az group delete --name rg-projeto1-webapp --yes --no-wait
 - App runs as a non-privileged user, with parameterized queries and HTML escaping.
 
 ---
-
-*Academic demonstration web application.*
