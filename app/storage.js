@@ -1,12 +1,5 @@
 'use strict';
 
-// Camada de acesso ao Azure Blob Storage usando MANAGED IDENTITY.
-// - DefaultAzureCredential pega o token da identidade da VM via IMDS (sem chave no código).
-// - listMateriais(): lista os arquivos do container.
-// - downloadMaterial(): baixa o blob e devolve um stream para a app encaminhar ao aluno.
-//
-// Permissão mínima necessária na identidade da VMSS: "Storage Blob Data Reader".
-
 const { DefaultAzureCredential } = require('@azure/identity');
 const { BlobServiceClient } = require('@azure/storage-blob');
 
@@ -29,7 +22,6 @@ async function listMateriais() {
       sizeKB: bytes ? Math.max(1, Math.round(bytes / 1024)) : null,
     });
   }
-  // ordem alfabética para a listagem ficar previsível
   materiais.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   return materiais;
 }
