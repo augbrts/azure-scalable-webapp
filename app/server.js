@@ -1,16 +1,5 @@
 'use strict';
 
-// Byte Academy — Projeto 1 (Azure)
-// Portal institucional simples: o aluno vê materiais de aula (Blob Storage)
-// e posta atividades (MySQL). O rodapé mostra qual instância respondeu.
-//
-// Rotas:
-//   GET  /health        -> 200 OK puro (health probe do Load Balancer; não toca DB/Blob)
-//   GET  /              -> página inicial (materiais + atividades + instância)
-//   POST /atividade     -> grava uma atividade no banco
-//   GET  /material/:name-> baixa um arquivo do Blob via Managed Identity (streaming)
-//   GET  /db-test       -> diagnóstico de conexão com o banco (JSON)
-
 const express = require('express');
 const db = require('./db');
 const storage = require('./storage');
@@ -22,13 +11,10 @@ const PROJECT_NAME = process.env.PROJECT_NAME || 'Byte Academy';
 
 app.use(express.urlencoded({ extended: false }));
 
-// Log simples por requisição (útil nas evidências e no troubleshooting).
 app.use((req, _res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
-
-// ---------- helpers de renderização ----------
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -218,10 +204,6 @@ function formatDate(value) {
   }
 }
 
-// ---------- rotas ----------
-
-// Health check do Load Balancer: NÃO depende de DB nem Blob, para que uma
-// instabilidade no banco não derrube todas as instâncias do balanceador.
 app.get('/health', (_req, res) => res.status(200).send('OK'));
 
 app.get('/', async (_req, res) => {
@@ -290,15 +272,11 @@ app.get('/db-test', async (_req, res) => {
   }
 });
 
-// ---------- inicialização ----------
-
 (async () => {
   try {
     await db.initDb();
     console.log('Banco: tabela "atividades" verificada/criada.');
   } catch (e) {
-    // A app sobe mesmo se o banco falhar agora; o health check continua OK e
-    // as tentativas seguintes reconectam. Isso evita derrubar a instância à toa.
     console.error('Banco indisponível na inicialização (a app subirá mesmo assim):', e.message);
   }
   app.listen(PORT, () => console.log(`${PROJECT_NAME} ouvindo na porta ${PORT}`));
