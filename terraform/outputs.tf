@@ -1,5 +1,5 @@
 output "app_url" {
-  description = "URL pública da aplicação (pelo Load Balancer)."
+  description = "URL pública da aplicação."
   value       = "http://${azurerm_public_ip.lb.ip_address}"
 }
 
@@ -14,11 +14,11 @@ output "mysql_fqdn" {
 }
 
 output "storage_account" {
-  description = "Nome da Storage Account (suba os materiais no container 'materiais')."
+  description = "Nome da Storage Account."
   value       = azurerm_storage_account.st.name
 }
 
 output "resource_group" {
-  description = "Resource Group criado."
+  description = "Resource Group."
   value       = azurerm_resource_group.rg.name
 }
