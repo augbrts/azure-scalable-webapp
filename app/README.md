@@ -18,12 +18,12 @@ instância** da VM Scale Set respondeu - o que prova o balanceamento de carga.
 
 ```
 app/
-├── server.js     # Express: rotas + HTML renderizado no servidor
-├── db.js         # MySQL (pool, TLS, INSERT/SELECT parametrizados)
-├── storage.js    # Blob via Managed Identity (lista e baixa por streaming)
-├── instance.js   # identifica a instância (IMDS, com fallback p/ hostname)
+├── server.js     
+├── db.js         
+├── storage.js     
+├── instance.js    
 ├── package.json
-└── .env.example  # modelo de variáveis (sem segredos)
+└── .env.example   
 ```
 
 ## Rotas
@@ -59,15 +59,11 @@ Veja `.env.example`. Em produção (VMSS) elas são injetadas pelo `infra/cloud-
 | `STORAGE_ACCOUNT` | Nome da Storage Account |
 | `BLOB_CONTAINER` | Container dos materiais (padrão `materiais`) |
 
-## Execução local (opcional)
+## Execução local 
 
 ```bash
 cd app
-cp .env.example .env   # preencha os valores
+cp .env.example .env    
 npm install
-npm start              # http://localhost:8080
+npm start               
 ```
-
-> Localmente, a listagem de **materiais** só funciona se a sua conta `az login` tiver a
-> role *Storage Blob Data Reader* no storage. Caso contrário, a app mostra um aviso amigável
-> e o restante continua funcionando - o teste completo é feito na VMSS.
