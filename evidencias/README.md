@@ -1,8 +1,8 @@
 # Evidências 
 
-## Lista de prints
+## Lista 
 
-| # | O que capturar | Evidência |
+| # | Print | Evidência |
 |---|---|---|
 | 1 | `az group create` (RG + região) | Organização / região |
 | 2 | `subnet list` (sub-redes pública e privada) | Rede virtual |
