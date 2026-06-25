@@ -1,16 +1,3 @@
-#cloud-config
-# ---------------------------------------------------------------------------
-# cloud-init da VMSS (camada web) — Projeto 1 (Azure)
-# O que faz: instala Node.js 20, baixa o app do GitHub, configura variáveis de
-# ambiente, e sobe o serviço (systemd) na porta 8080.
-#
-# ⚠️ ANTES DE USAR como --custom-data:
-#   1) troque os 4 valores marcados com  >>>SUBSTITUA<<<  abaixo;
-#   2) o arquivo PREENCHIDO contém a senha do banco -> NÃO comite no GitHub.
-#      Comite apenas este modelo com os placeholders.
-#   3) o repositório precisa estar PÚBLICO no GitHub (o git clone é anônimo).
-# ---------------------------------------------------------------------------
-
 package_update: true
 packages:
   - git
@@ -18,22 +5,20 @@ packages:
   - curl
 
 write_files:
-  # Variáveis de ambiente lidas pelo serviço. Fica legível só para o root (0640).
   - path: /etc/byte-academy.env
     permissions: '0640'
     owner: root:root
     content: |
       PORT=8080
       PROJECT_NAME=Byte Academy
-      DB_HOST=>>>SUBSTITUA_FQDN_DO_MYSQL<<<
+      DB_HOST=>>>FQDN_MYSQL<<<
       DB_USER=dbadmin
-      DB_PASS=>>>SUBSTITUA_SENHA_DO_BANCO<<<
+      DB_PASS=>>>SENHA_BANCO<<<
       DB_NAME=appdb
       DB_PORT=3306
-      STORAGE_ACCOUNT=>>>SUBSTITUA_NOME_DO_STORAGE<<<
+      STORAGE_ACCOUNT=>>>STORAGE<<<
       BLOB_CONTAINER=materiais
 
-  # Unidade systemd: reinicia sozinha e roda como usuário sem privilégio.
   - path: /etc/systemd/system/byte-academy.service
     permissions: '0644'
     owner: root:root
@@ -56,11 +41,9 @@ write_files:
       WantedBy=multi-user.target
 
 runcmd:
-  # Node.js 20 LTS via NodeSource (precisa de saída de internet -> outbound rule do LB)
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y nodejs
-  # Baixa o código do portfólio. Troque a URL pelo SEU repositório público.
-  - git clone https://github.com/>>>SEU_USUARIO<<</projeto1-azure-webapp.git /opt/src
+  - git clone https://github.com/>>>USER<<</projeto1-azure-webapp.git /opt/src
   - cp -r /opt/src/app /opt/app
   - cd /opt/app && npm install --omit=dev
   - chown -R www-data:www-data /opt/app
