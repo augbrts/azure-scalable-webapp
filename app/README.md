@@ -1,18 +1,8 @@
-# Byte Academy - app do Projeto 1 (Azure)
+# Byte Academy 
 
 Portal institucional simples: o aluno **vê materiais de aula** (lidos do Azure Blob Storage)
 e **posta atividades** (gravadas no Azure Database for MySQL). O rodapé mostra **qual
 instância** da VM Scale Set respondeu - o que prova o balanceamento de carga.
-
-## Como o app atende ao enunciado
-
-| Requisito do professor | Onde é cumprido |
-|---|---|
-| Identificar qual instância respondeu | Badge no rodapé (`instance.js` via Azure IMDS) |
-| Registrar informação no banco gerenciado | `POST /atividade` → `db.js` (INSERT no MySQL) |
-| Acessar arquivo no object storage | Seção "Materiais" + `GET /material/:name` → `storage.js` (Blob via Managed Identity) |
-| Resposta ao health check do balanceador | `GET /health` → `200 OK` (não depende de DB/Blob) |
-| Acesso público pelo Load Balancer | App escuta na porta `8080`; o LB mapeia `80 → 8080` |
 
 ## Estrutura
 
