@@ -1,21 +1,10 @@
-###############################################################################
-# Projeto 1 (Azure) — Infraestrutura como código (Terraform)
-# Espelha a arquitetura do roteiro CLI: VNet (subnets pública/privada), NSGs,
-# Storage/Blob, MySQL Flexible Server (privado), Standard Load Balancer,
-# VM Scale Set com autoscale e Managed Identity.
-###############################################################################
 
-# ----------------------------------------------------------------------------
-# Resource Group
-# ----------------------------------------------------------------------------
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
 
-# ----------------------------------------------------------------------------
-# Rede: VNet + sub-redes pública (web) e privada (db, delegada ao MySQL)
-# ----------------------------------------------------------------------------
+
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-projeto1"
   resource_group_name = azurerm_resource_group.rg.name
@@ -46,12 +35,7 @@ resource "azurerm_subnet" "db" {
   }
 }
 
-# ----------------------------------------------------------------------------
-# Segurança (NSGs)
-#  - web: 80 da Internet + 8080 do balanceador (health probe)
-#  - db : 3306 apenas vindo da sub-rede web
-#  (admin das VMs é via az vmss run-command — sem SSH exposto)
-# ----------------------------------------------------------------------------
+
 resource "azurerm_network_security_group" "web" {
   name                = "nsg-web"
   resource_group_name = azurerm_resource_group.rg.name
@@ -121,9 +105,7 @@ resource "azurerm_subnet_network_security_group_association" "db" {
   network_security_group_id = azurerm_network_security_group.db.id
 }
 
-# ----------------------------------------------------------------------------
-# Object storage (Blob) — container privado "materiais"
-# ----------------------------------------------------------------------------
+
 resource "azurerm_storage_account" "st" {
   name                            = var.storage_account_name
   resource_group_name             = azurerm_resource_group.rg.name
@@ -139,9 +121,7 @@ resource "azurerm_storage_container" "materiais" {
   container_access_type = "private"
 }
 
-# ----------------------------------------------------------------------------
-# Banco gerenciado: MySQL Flexible Server (acesso privado via VNet)
-# ----------------------------------------------------------------------------
+
 resource "azurerm_private_dns_zone" "mysql" {
   name                = "projeto1.private.mysql.database.azure.com"
   resource_group_name = azurerm_resource_group.rg.name
@@ -182,9 +162,7 @@ resource "azurerm_mysql_flexible_database" "appdb" {
   collation           = "utf8mb4_unicode_ci"
 }
 
-# ----------------------------------------------------------------------------
-# Load Balancer (Standard) — probe /health:8080, regra 80->8080, saída (outbound)
-# ----------------------------------------------------------------------------
+
 resource "azurerm_public_ip" "lb" {
   name                = "pip-lb-projeto1"
   resource_group_name = azurerm_resource_group.rg.name
@@ -242,9 +220,7 @@ resource "azurerm_lb_outbound_rule" "out" {
   }
 }
 
-# ----------------------------------------------------------------------------
-# VM Scale Set (camada web) — Managed Identity + cloud-init (templated)
-# ----------------------------------------------------------------------------
+
 resource "azurerm_linux_virtual_machine_scale_set" "web" {
   name                = "vmss-web"
   resource_group_name = azurerm_resource_group.rg.name
@@ -300,7 +276,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "web" {
     }
   }
 
-  # O autoscale gerencia a contagem de instâncias; ignoramos para não haver drift.
   lifecycle {
     ignore_changes = [instances]
   }
@@ -315,9 +290,7 @@ resource "azurerm_role_assignment" "vmss_blob_reader" {
   principal_id         = azurerm_linux_virtual_machine_scale_set.web.identity[0].principal_id
 }
 
-# ----------------------------------------------------------------------------
-# Auto scaling (Azure Monitor): 2 -> 3 por CPU
-# ----------------------------------------------------------------------------
+
 resource "azurerm_monitor_autoscale_setting" "vmss" {
   name                = "autoscale-vmss"
   resource_group_name = azurerm_resource_group.rg.name
