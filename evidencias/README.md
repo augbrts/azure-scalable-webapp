@@ -1,7 +1,4 @@
-# Evidências (prints)
-
-Salve aqui os prints numerados, com nomes descritivos. Sugestão de nomenclatura:
-`print-NN-descricao.png` (ex.: `print-14-app-no-lb.png`).
+# Evidências 
 
 ## Lista de prints
 
