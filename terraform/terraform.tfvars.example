@@ -1,15 +1,12 @@
-# Copie este arquivo para "terraform.tfvars" e preencha com os SEUS valores.
-# terraform.tfvars NUNCA deve ser commitado (o .gitignore da pasta já bloqueia isso).
 
-subscription_id      = "00000000-0000-0000-0000-000000000000" # az account show --query id -o tsv
+subscription_id      = "00000000-0000-0000-0000-000000000000" 
 location              = "eastus2"
 resource_group_name   = "rg-projeto1-webapp"
 project_name          = "Byte Academy"
 
-storage_account_name  = "stprojeto1seunome" # 3-24 chars, minúsculas/números, ÚNICO no mundo
-mysql_name            = "mysql-projeto1-seunome"
+storage_account_name  = "stprojeto1" 
+mysql_name            = "mysql-projeto1"
 db_admin_user         = "dbadmin"
-db_admin_password     = "TroqueEstaSenha!123" # NÃO reutilize senhas reais aqui
+db_admin_password     = "Senha!123" 
 
-ssh_public_key        = "ssh-rsa AAAAB3NzaC1yc2E... seu-email@exemplo.com"
-github_repo_url       = "https://github.com/SEU_USUARIO/azure-scalable-webapp.git"
+ssh_public_key        = "ssh-rsa AAAAB3NzaC1yc2E... email@ex.com"
